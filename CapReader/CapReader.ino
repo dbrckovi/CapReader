@@ -40,21 +40,21 @@ void Measure()
   PrintLine(0, "Measuring...");
   PrintLine(1, " ");
 
-  int elapsed = 0;
+  unsigned long elapsed = 0;
   float R;
 
   Discharge();
   R = R1;
   elapsed = ChargeAndWait(CHARGE1);
 
-  if (elapsed < 10)
+  if (elapsed < 1000)
   {
     Discharge();
     R = R2;
     elapsed = ChargeAndWait(CHARGE2);
   }
 
-  if (elapsed < 10)
+  if (elapsed < 1000)
   {
     Discharge();
     R = R3;
@@ -63,7 +63,7 @@ void Measure()
 
   Discharge();
 
-  if (elapsed > 10) PrintLine(0, "Finished");
+  if (elapsed > 1000) PrintLine(0, "Finished");
   else PrintLine(0, "Not sure");
 
   PrintCapacitance(elapsed, R);
@@ -83,18 +83,18 @@ void Discharge()
   digitalWrite(DISCHARGE, LOW);
 }
 
-int ChargeAndWait(int pinNumber)
+unsigned long ChargeAndWait(int pinNumber)
 {
   pinMode(pinNumber, OUTPUT);
   digitalWrite(pinNumber, HIGH);
-  int start_time = millis();
-  int elapsed = 0;
+  unsigned long start_time = micros();
+  unsigned long elapsed = 0;
   
   while (digitalRead(BUTTON) == HIGH)
   {
-    if (analogRead(A5) > 660) 
+    if (analogRead(A5) > CHARGE_VALUE) 
     {
-      elapsed = millis() - start_time;
+      elapsed = micros() - start_time;
       break;
     }
   }
@@ -109,14 +109,14 @@ void PrintVoltage(int voltage)
     PrintLine(1, strVoltage);
 }
 
-void PrintCapacitance(int elapsedMillis, float R)
+void PrintCapacitance(unsigned long elapsedMillis, float R)
 {
-  float seconds = (float)elapsedMillis / 1000.0;
-  float fahrads = seconds / R;
-  float milliFahrads = fahrads * 1000.0;
-  float microFahrads = milliFahrads * 1000.0;
-  float nanoFahrads = microFahrads * 1000.0;
-  float picoFahrads = nanoFahrads * 1000.0;
+  double seconds = (double)elapsedMillis / 1000000.0;
+  double fahrads = seconds / R;
+  double milliFahrads = fahrads * 1000.0;
+  double microFahrads = milliFahrads * 1000.0;
+  double nanoFahrads = microFahrads * 1000.0;
+  double picoFahrads = nanoFahrads * 1000.0;
 
   String out;
   
