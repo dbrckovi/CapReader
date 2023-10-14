@@ -7,11 +7,11 @@ const float R3 = 10000000.0;
 const int CHARGE_VALUE = 647;     // (647 is 63.2% of 1023)
 const int MAX_INITIAL_VOLTAGE = 3;
 const int BUTTON = 2;
-const int CHARGE1 = 3;  //1k
+const int CHARGE1 = 5;  //1k
 const int CHARGE2 = 4;  //1M
-const int CHARGE3 = 5;  //10M
-const int DISCHARGE = 8;
-const int rs = 6, en = 7, d4 = 9, d5 = 10, d6 = 11, d7 = 12;
+const int CHARGE3 = 3;  //10M
+const int DISCHARGE = 6;
+const int rs = 7, en = 8, d4 = 9, d5 = 10, d6 = 11, d7 = 12;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 void setup() {
@@ -28,7 +28,7 @@ void setup() {
 
 void loop() 
 {
-  if(digitalRead(BUTTON) == HIGH) 
+  if(digitalRead(BUTTON) == LOW) 
   {
     Measure();
     PrintLine(0, "Ready");
@@ -68,7 +68,7 @@ void Measure()
 
   PrintCapacitance(elapsed, R);
 
-  while(digitalRead(BUTTON) == HIGH) {}
+  while(digitalRead(BUTTON) == LOW) {}
 }
 
 void Discharge()
@@ -78,7 +78,7 @@ void Discharge()
   while(true)
   {
     if (analogRead(A5) <= MAX_INITIAL_VOLTAGE) break;
-    if (digitalRead(BUTTON) == LOW) break;
+    if (digitalRead(BUTTON) == HIGH) break;
   }
   digitalWrite(DISCHARGE, LOW);
 }
@@ -90,7 +90,7 @@ unsigned long ChargeAndWait(int pinNumber)
   unsigned long start_time = micros();
   unsigned long elapsed = 0;
   
-  while (digitalRead(BUTTON) == HIGH)
+  while (digitalRead(BUTTON) == LOW)
   {
     if (analogRead(A5) > CHARGE_VALUE) 
     {
